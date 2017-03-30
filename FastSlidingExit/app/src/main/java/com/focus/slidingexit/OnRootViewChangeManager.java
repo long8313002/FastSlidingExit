@@ -11,17 +11,17 @@ import java.util.List;
  * Created by zhangzheng on 2017/3/28.
  */
 
-class OnRootViewChangeListener implements HoldArrayList.OnRootViewChange, IRootViewInfo {
+class OnRootViewChangeManager implements IRootViewInfo, IInjection.OnRootViewsChangeLis {
 
     private List<View> rootViews;
     private List<SwipeFrameLayout> swipeFrameLayouts;
     private ICacheSwipeLayout cacheSwipeManager;
     private ISwipeFrameManager swipeFrameManager;
 
-    public OnRootViewChangeListener() {
+    public OnRootViewChangeManager() {
         this.swipeFrameLayouts = new ArrayList<>();
         cacheSwipeManager = CacheSwipeLayoutManager.getCacheManagerImp();
-        swipeFrameManager =  SwipeFrameManager.getInstance();
+        swipeFrameManager = SwipeFrameManager.getInstance();
     }
 
     @Override
@@ -53,7 +53,18 @@ class OnRootViewChangeListener implements HoldArrayList.OnRootViewChange, IRootV
 
     @Override
     public boolean canSwip() {
-        return rootViews != null && rootViews.size() > 1;
+        Object allRootViews = WindowManagerGlobal.getInstance().getRootViews();
+        boolean canSwip = this.rootViews != null && this.rootViews.size() > 1;
+        if (allRootViews != null) {
+            if (allRootViews instanceof View[] && ((View[]) allRootViews).length <= 1) {
+                return false;
+            }
+
+            if (allRootViews instanceof ArrayList && ((ArrayList) allRootViews).size() <= 1) {
+                return false;
+            }
+        }
+        return canSwip;
     }
 
     @Override
