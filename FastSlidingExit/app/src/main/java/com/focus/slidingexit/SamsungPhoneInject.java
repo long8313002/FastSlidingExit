@@ -25,6 +25,9 @@ public class SamsungPhoneInject implements IInjection {
                 while (true) {
                     SystemClock.sleep(500);
                     View[] rootViews = (View[]) WindowManagerGlobal.getInstance().getRootViews();
+                    if(rootViews == null){
+                        continue;
+                    }
                     rootViewList.clear();
                     for (View view : rootViews) {
                         rootViewList.add(view);
