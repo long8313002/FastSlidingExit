@@ -4,37 +4,29 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.SparseArray;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 /**
  * Created by zhangzheng on 2017/3/30.
  */
 
 public class CacheSwipeLayoutImp implements ICacheSwipeLayout {
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private SparseArray<Bitmap> cacheBitmap = new SparseArray<>();
 
-    private Future<?> submit;
 
     @Override
     public void cacheLayout(final SwipeFrameLayout layout) {
         if (!layout.isUserCacheBitmap()) {
             return;
         }
-        if (submit != null && !submit.isCancelled()) {
-            submit.cancel(true);
-            submit = null;
-        }
         if (cacheBitmap.size() > 0) {
             cacheBitmap(cacheBitmap.valueAt(0), layout);
             return;
         }
-        submit = executorService.submit(new Runnable() {
+
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 int width = layout.getMeasuredWidth();
@@ -55,10 +47,19 @@ public class CacheSwipeLayoutImp implements ICacheSwipeLayout {
                 }
                 cacheBitmap(bitmap, layout);
             }
-        });
+        }).start();
     }
 
-    private void cacheBitmap(Bitmap bitmap, SwipeFrameLayout layout) {
+    private void cacheBitmap(final Bitmap bitmap, final SwipeFrameLayout layout) {
+        if(Looper.getMainLooper()!=Looper.myLooper()){
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    cacheBitmap(bitmap,layout);
+                }
+            });
+            return;
+        }
         Canvas canvas = new CacheCanvas(bitmap);
         canvas.clipRect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         canvas.drawColor(Color.WHITE);
