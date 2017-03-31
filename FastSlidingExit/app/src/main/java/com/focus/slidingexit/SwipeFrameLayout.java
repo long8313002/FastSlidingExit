@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
@@ -30,7 +28,6 @@ class SwipeFrameLayout extends FrameLayout {
     private Drawable mShadowDrawable;
     private boolean isSwipe = true;
     private Rect rect = new Rect();
-    private Paint paint = new Paint();
     private boolean isUserCacheBitmap = true;
     private IRootViewInfo rootViewInfo;
 
@@ -51,7 +48,6 @@ class SwipeFrameLayout extends FrameLayout {
         this.rootViewInfo = rootViewInfo;
         setClickable(true);
         mShadowDrawable = ShadeDrawable.getShadeDrawable();
-        paint.setColor(Color.parseColor("#E84820"));
     }
 
     @Override
@@ -62,29 +58,12 @@ class SwipeFrameLayout extends FrameLayout {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        synchronized (this) {
-            drawPrePagerBitmap(canvas);
-            int save = canvas.save();
-            canvas.translate(offset, 0);
-            drawShadow(canvas);
-            super.dispatchDraw(canvas);
-            canvas.restoreToCount(save);
-        }
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        synchronized (this) {
-            super.draw(canvas);
-        }
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasWindowFocus) {
-        super.onWindowFocusChanged(hasWindowFocus);
-        if (hasWindowFocus) {
-            invalidate();
-        }
+        drawPrePagerBitmap(canvas);
+        int save = canvas.save();
+        canvas.translate(offset, 0);
+        drawShadow(canvas);
+        super.dispatchDraw(canvas);
+        canvas.restoreToCount(save);
     }
 
     private void drawShadow(Canvas canvas) {
