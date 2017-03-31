@@ -54,18 +54,8 @@ class OnRootViewChangeManager implements IRootViewInfo, IInjection.OnRootViewsCh
 
     @Override
     public boolean canSwip() {
-        Object allRootViews = WindowManagerGlobal.getInstance().getRootViews();
-        boolean canSwip = this.rootViews != null && this.rootViews.size() > 1;
-        if (allRootViews != null) {
-            if (allRootViews instanceof View[] && ((View[]) allRootViews).length <= 1) {
-                return false;
-            }
-
-            if (allRootViews instanceof ArrayList && ((ArrayList) allRootViews).size() <= 1) {
-                return false;
-            }
-        }
-        return canSwip;
+        List<View> allRootViews = WindowManagerGlobal.getInstance().getAllActiveActivityViews();
+        return allRootViews.size()>1;
     }
 
     @Override
