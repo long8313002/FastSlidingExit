@@ -1,5 +1,6 @@
 package com.focus.slidingexit;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -74,6 +75,14 @@ class OnRootViewChangeManager implements IRootViewInfo, IInjection.OnRootViewsCh
 
     @Override
     public SwipeFrameLayout getPreSwipeFrameLayout() {
+        List<SwipeFrameLayout> remove = new ArrayList<>();
+        for (SwipeFrameLayout swipeFrameLayout:swipeFrameLayouts){
+            Activity activity = (Activity) swipeFrameLayout.getContext();
+            if(activity.isFinishing()){
+                remove.add(swipeFrameLayout);
+            }
+        }
+        swipeFrameLayouts.removeAll(remove);
         if (swipeFrameLayouts.size() > 1) {
             return swipeFrameLayouts.get(swipeFrameLayouts.size() - 2);
         }

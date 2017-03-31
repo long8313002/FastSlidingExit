@@ -40,7 +40,6 @@ public class CacheSwipeLayoutImp implements ICacheSwipeLayout {
                     if (bitmap.getWidth() <= 0 || bitmap.getHeight() <= 0 || bitmap.isRecycled()) {
                         bitmap = null;
                     }
-                    cacheBitmap.clear();
                 }
                 if (bitmap == null) {
                     bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
@@ -63,8 +62,9 @@ public class CacheSwipeLayoutImp implements ICacheSwipeLayout {
         Canvas canvas = new CacheCanvas(bitmap);
         canvas.clipRect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         canvas.drawColor(Color.WHITE);
-        layout.dispatchDraw(canvas);
+        cacheBitmap.clear();
         cacheBitmap.put(layout.hashCode(), bitmap);
+        layout.dispatchDraw(canvas);
     }
 
     @Override
@@ -74,7 +74,10 @@ public class CacheSwipeLayoutImp implements ICacheSwipeLayout {
         }
         Bitmap bitmap = cacheBitmap.get(layout.hashCode());
         if (bitmap == null) {
-            return null;
+            if(cacheBitmap.size()>0){
+                 cacheBitmap(cacheBitmap.valueAt(0),layout);
+            }
+            return cacheBitmap.get(layout.hashCode());
         }
         if (bitmap.getWidth() <= 0 || bitmap.getHeight() <= 0 || bitmap.isRecycled()) {
             bitmap = null;
