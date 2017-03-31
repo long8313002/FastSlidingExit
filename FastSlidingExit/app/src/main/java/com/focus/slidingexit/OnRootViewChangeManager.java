@@ -46,7 +46,7 @@ class OnRootViewChangeManager implements IRootViewInfo, IInjection.OnRootViewsCh
     }
 
     private void cacheSwipeBitmap() {
-        SwipeFrameLayout preSwipLayout = getPreSwipeFrameLayout();
+        SwipeFrameLayout preSwipLayout = getFilterPreSwipeFrameLayout();
         if (preSwipLayout != null) {
             cacheSwipeManager.cacheLayout(preSwipLayout);
         }
@@ -55,7 +55,7 @@ class OnRootViewChangeManager implements IRootViewInfo, IInjection.OnRootViewsCh
     @Override
     public boolean canSwip() {
         List<View> allRootViews = WindowManagerGlobal.getInstance().getAllActiveActivityViews();
-        return allRootViews.size()>1;
+        return allRootViews.size() > 1;
     }
 
     @Override
@@ -64,15 +64,22 @@ class OnRootViewChangeManager implements IRootViewInfo, IInjection.OnRootViewsCh
     }
 
     @Override
-    public SwipeFrameLayout getPreSwipeFrameLayout() {
-        List<SwipeFrameLayout> remove = new ArrayList<>();
-        for (SwipeFrameLayout swipeFrameLayout:swipeFrameLayouts){
+    public SwipeFrameLayout getFilterPreSwipeFrameLayout() {
+        List<SwipeFrameLayout> filterSwipes = new ArrayList<>();
+        for (SwipeFrameLayout swipeFrameLayout : swipeFrameLayouts) {
             Activity activity = (Activity) swipeFrameLayout.getContext();
-            if(activity.isFinishing()){
-                remove.add(swipeFrameLayout);
+            if (!activity.isFinishing()) {
+                filterSwipes.add(swipeFrameLayout);
             }
         }
-        swipeFrameLayouts.removeAll(remove);
+        if (filterSwipes.size() > 1) {
+            return filterSwipes.get(filterSwipes.size() - 2);
+        }
+        return null;
+    }
+
+    @Override
+    public SwipeFrameLayout getPreSwipeFrameLayout() {
         if (swipeFrameLayouts.size() > 1) {
             return swipeFrameLayouts.get(swipeFrameLayouts.size() - 2);
         }
@@ -80,8 +87,7 @@ class OnRootViewChangeManager implements IRootViewInfo, IInjection.OnRootViewsCh
     }
 
     @Override
-    public Bitmap getCacheBitmap() {
-        SwipeFrameLayout preSwipLayout = getPreSwipeFrameLayout();
-        return cacheSwipeManager.getCacheBitmap(preSwipLayout);
+    public Bitmap getCacheBitmap(SwipeFrameLayout preSwipe) {
+        return cacheSwipeManager.getCacheBitmap(preSwipe);
     }
 }

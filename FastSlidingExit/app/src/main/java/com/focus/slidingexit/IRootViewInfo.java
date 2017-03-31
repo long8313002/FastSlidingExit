@@ -15,7 +15,9 @@ import java.util.List;
 
     List<View> getRootViews();
 
+    SwipeFrameLayout getFilterPreSwipeFrameLayout();
+
     SwipeFrameLayout getPreSwipeFrameLayout();
 
-    Bitmap getCacheBitmap();
+    Bitmap getCacheBitmap(SwipeFrameLayout preSwipe);
 }

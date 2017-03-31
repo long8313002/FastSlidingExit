@@ -72,7 +72,12 @@ class SwipeFrameLayout extends FrameLayout {
     }
 
     private void drawPrePagerBitmap(Canvas canvas) {
-        Bitmap cacheBitmap = rootViewInfo.getCacheBitmap();
+        Bitmap cacheBitmap ;
+        if(offset ==SCREEN_WIDTH){
+            cacheBitmap = rootViewInfo.getCacheBitmap(rootViewInfo.getPreSwipeFrameLayout());
+        }else{
+            cacheBitmap = rootViewInfo.getCacheBitmap(rootViewInfo.getFilterPreSwipeFrameLayout());
+        }
         if (cacheBitmap == null) {
             return;
         }
