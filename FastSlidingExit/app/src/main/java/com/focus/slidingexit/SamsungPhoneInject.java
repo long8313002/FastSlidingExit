@@ -1,5 +1,6 @@
 package com.focus.slidingexit;
 
+import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -30,7 +31,9 @@ public class SamsungPhoneInject implements IInjection {
                     }
                     rootViewList.clear();
                     for (View view : rootViews) {
-                        rootViewList.add(view);
+                        if(view.getContext() instanceof Activity){
+                            rootViewList.add(view);
+                        }
                     }
                     filterAndNotify(onRootViewsChangeLis, rootViewList);
                 }
