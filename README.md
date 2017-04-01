@@ -7,5 +7,9 @@
 仅仅需要在应用启动的时候，调用SlidingExit.injection()便可以全局开启滑动退出。
 
 jar包地址：https://pan.baidu.com/s/1slNLsfV
-使用：在Application的onCreate方法中调用SlidingExit.injection()
-原理：
+
+
+使用：在Application的onCreate方法中调用SlidingExit.injection()      
+
+
+原理：http://blog.csdn.net/zhangzheng0602/article/details/68942677
